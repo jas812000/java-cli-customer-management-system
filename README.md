@@ -71,7 +71,6 @@ The repository returns defensive copies of collections to protect internal state
 1. Clone the repository:
    ```bash
    git clone https://github.com/<your-username>/java-cli-customer-management-system.git
-  ```
 
 2. Compile the source files:
    ```bash
