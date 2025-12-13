@@ -75,7 +75,6 @@ The repository returns defensive copies of collections to protect internal state
 2. Compile the source files:
    ```bash
    javac *.java
-  ```
 
 3. Run the application:
    ```bash
