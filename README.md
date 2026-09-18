@@ -1,126 +1,170 @@
 # Java CLI Customer Management System
 
-## Overview
-The Java CLI Customer Management System is a modular Java backend application designed to 
-manage customer records in memory through a command-line interface.
+A command-line Java application for managing customer records using a layered architecture, validated user input, bounded in-memory storage, and automated testing.
 
-The project focuses on backend fundamentals such as domain modeling, input validation, 
-bounded storage, query logic, and automated testing rather than UI concerns. It 
-demonstrates how a small but well-structured backend system can be built, tested, and 
-packaged using standard Java tooling.
+## Overview
+
+The Java CLI Customer Management System demonstrates core backend development concepts in a small, focused application. Users can add and retrieve customer records through an interactive CLI while the application enforces customer ID uniqueness, validates input, manages repository capacity, and supports sales-range queries.
+
+The project separates application startup, user input, business operations, domain data, and repository access into distinct responsibilities.
 
 ---
 
 ## Features
-- Interactive CLI menu for managing customers
-- Add single or multiple customers with validated input
-- Five-digit customer ID validation (including leading zeros)
-- Retrieve customers by unique ID
-- Filter customers by inclusive sales range
-- Fixed-capacity repository enforcing storage limits
-- Defensive handling of invalid user input
-- Automated JUnit tests covering repository and input logic
+
+- Add individual or multiple customer records
+- Display all stored customers
+- Search for a customer by unique five-digit ID
+- Filter customers by an inclusive sales range
+- Preserve leading zeros when customer IDs are displayed
+- Prevent duplicate customer IDs
+- Reject negative and non-finite sales values
+- Enforce fixed repository capacity
+- Normalize reversed sales-range bounds
+- Handle invalid console input without terminating the application
+- Protect repository state through defensive copying
+- Automated unit tests for repository and input behavior
 
 ---
 
-## Architecture Overview
-The system follows a layered, object-oriented architecture:
+## Architecture
 
-### UI / Input Layer
-Handles all console interaction and input validation, ensuring malformed or invalid input 
-does not propagate into the core domain logic.
+The application uses a small layered design:
+
+### Application Entry Point
+
+`Main` creates the application dependencies and delegates execution to `CustomerService`.
 
 ### Service Layer
-Coordinates application use cases such as adding customers, querying data, and enforcing 
-business rules.
+
+`CustomerService` controls the application lifecycle and coordinates customer-management operations, including menu routing, customer creation, searches, and result presentation.
+
+### Input Layer
+
+`Input` centralizes console input and validation, including:
+
+- Menu selections
+- Non-empty customer names
+- Five-digit customer IDs
+- Minimum integer values
+- Finite numeric values
+- Non-negative sales values
 
 ### Domain Model
-`Customer` represents an immutable domain entity containing identifying information and 
-total sales.
+
+`Customer` is an immutable domain object containing:
+
+- Customer name
+- Customer ID
+- Total sales
 
 ### Repository Layer
-`CustomerRepository` manages bounded in-memory storage, lookup by ID, range-based queries, 
-and defensive copying of internal state.
+
+`CustomerRepository` provides bounded in-memory storage and:
+
+- Enforces repository capacity
+- Prevents duplicate customer IDs
+- Retrieves customers by ID
+- Filters customers by sales range
+- Returns defensive copies of stored records
 
 ---
 
-## Data Management Model
-- All data is stored **in memory** (no database or filesystem persistence)
-- Repository enforces a fixed maximum capacity
-- Customer records are queried via controlled repository methods
-- This design simulates backend data access patterns while remaining simple and testable
+## Project Structure
 
----
-
-## Customer State & Validation
-- Customer IDs must be exactly five digits
-- Invalid numeric input is rejected and re-prompted
-- Sales range queries automatically normalize reversed bounds
-- Repository state cannot be mutated externally
-
----
-
-## Error Handling Strategy
-The system enforces correctness through defensive programming:
-- Invalid input is detected and re-requested without crashing
-- Repository capacity limits are enforced
-- Missing customer lookups return null instead of throwing
-- Query methods return empty collections when no matches exist
-
----
-
-## Build & Test
-
-### Prerequisites
-- Java 17+
-- Maven 3.8+
-
-### Run Tests
-```bash
-mvn test
+```text
+src/
+├── main/java/com/jamesstevens/customers/
+│   ├── Customer.java
+│   ├── CustomerRepository.java
+│   ├── CustomerService.java
+│   ├── Input.java
+│   └── Main.java
+└── test/java/com/jamesstevens/customers/
+    ├── CustomerRepositoryTest.java
+    └── InputTest.java
 ```
 
 ---
 
-## Run (CLI)
+## Validation and Error Handling
+
+The application handles invalid input through controlled validation and re-prompting.
+
+Key rules include:
+
+- Customer IDs must contain exactly five digits
+- Customer IDs must be unique
+- Leading-zero IDs such as `00012` are supported
+- Sales values cannot be negative
+- `NaN` and infinite numeric values are rejected
+- Repository capacity cannot be less than one
+- New customers cannot be added after repository capacity is reached
+- Reversed sales-range bounds are automatically normalized
+- Missing customer lookups are handled without terminating the program
+
+---
+
+## Build and Test
+
+### Prerequisites
+
+- Java 17+
+- Maven 3.8+
+
+### Run the Tests
+
+```bash
+mvn clean test
+```
+
+The project currently includes **16 automated JUnit tests** covering repository behavior and input validation.
+
+### Run the Application
+
 ```bash
 mvn -q exec:java
 ```
 
-The CLI menu allows users to:
-- Add customers
-- Display all customers
-- Search by customer ID
-- Retrieve customers within a sales range
-- Exit the program cleanly
+---
+
+## Technology Stack
+
+- **Java:** 17
+- **Build Tool:** Maven
+- **Testing:** JUnit 5
+- **Architecture:** Layered object-oriented design
+- **Interface:** Command line
+- **Storage:** In-memory repository
 
 ---
 
-## Tools & Technologies
-- **Language**: Java 17
-- **Build Tool**: Maven
-- **Testing**: JUnit 5
-- **Architecture**: Layered OOP design
-- **Interface**: Command Line (CLI)
+## Engineering Concepts Demonstrated
+
+This project demonstrates:
+
+- Object-oriented Java design
+- Separation of responsibilities
+- Dependency composition through a minimal application entry point
+- Repository-pattern fundamentals
+- Immutable domain modeling
+- Defensive copying
+- Input validation and error handling
+- Data-integrity rules
+- Range-based query logic
+- Unit testing with JUnit 5
+- Maven-based build and execution
 
 ---
 
-## Purpose
+## Limitations
 
-This project serves as a backend engineering case study demonstrating:
-- Clean Java project structuring with Maven
-- Layered application architecture
-- Defensive input validation
-- In-memory repository design with bounded capacity
-- Query logic and edge-case handling
-- Automated unit testing with JUnit
-- Translation of backend design concepts into working Java code
+Customer records exist only for the lifetime of the running application. The project intentionally does not use database or filesystem persistence.
+
+This keeps the project focused on Java fundamentals, application structure, validation, repository behavior, and automated testing.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-
----
-
+This project is licensed under the MIT License. See `LICENSE` for details.

@@ -7,7 +7,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
+    <groupId>com.jamesstevens</groupId>
     <artifactId>java-cli-customer-management-system</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -52,7 +52,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.1</version>
                 <configuration>
-                    <mainClass>com.example.customers.Main</mainClass>
+                    <mainClass>com.jamesstevens.customers.Main</mainClass>
                 </configuration>
             </plugin>
 
